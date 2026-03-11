@@ -1,0 +1,78 @@
+<div class="panel-left">
+  <div class="panel-head">
+    <h2>All Variants</h2>
+    <span class="badge">{{total}} combinations</span>
+  </div>
+  <div class="combos-list">
+    {{#if error}}<div class="error">{{error}}</div>{{/if}}
+
+    {{#each combos}}
+    <div class="combo-card">
+      {{#each tags}}
+        {{#unless @first}}<span class="combo-sep">+</span>{{/unless}}
+        <span class="tag">
+          <span class="tag-param">{{param}}</span>
+          <span class="tag-value">{{value}}</span>
+        </span>
+      {{/each}}
+    </div>
+    {{else}}
+    <div class="empty-state">
+      Add parameters on the right to see all table variants here.
+    </div>
+    {{/each}}
+  </div>
+</div>
+
+<div class="panel-right">
+  <div class="panel-head">
+    <h2>Parameters</h2>
+    <form class="add-form" action="/add" method="POST">
+      <input type="text" name="parameter" placeholder="Parameter name" required />
+      <input type="text" name="choices"   placeholder="Choices:" required />
+      <button type="submit">+ Add Parameter</button>
+    </form>
+    <p class="hint">Separate choices with commas</p>
+  </div>
+
+  <div class="params-list">
+    {{#each params}}
+    <div class="param-card">
+      <div class="param-card-head">
+        <span class="param-name">{{parameter}}</span>
+        <span class="param-count">{{length choices}} choices</span>
+      </div>
+      <div class="param-card-body">
+        <div class="choices-chips">
+          {{#each choices}}
+          <span class="choice-chip">{{this}}</span>
+          {{/each}}
+        </div>
+        <div class="param-actions">
+          <button class="btn-edit" type="button"
+            onclick="openEdit({{id}}, '{{parameter}}', '{{choices}}')">
+            Edit
+          </button>
+          <form action="/delete/{{id}}" method="POST" onsubmit="return confirm('Delete {{parameter}}?')">
+            <button class="btn-del" type="submit">✕</button>
+          </form>
+        </div>
+      </div>
+      <div class="inline-edit" id="edit-{{id}}">
+        <form action="/update/{{id}}" method="POST">
+          <input type="text" name="parameter" required />
+          <input type="text" name="choices" required />
+          <div class="edit-btns">
+            <button class="btn-save" type="submit">Save</button>
+            <button class="btn-cancel" type="button" onclick="closeEdit({{id}})">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    {{else}}
+    <div class="empty-state" style="padding:30px 0; text-align:center; color:#94a3b8; font-size:.85rem;">
+      No parameters yet.
+    </div>
+    {{/each}}
+  </div>
+</div>
